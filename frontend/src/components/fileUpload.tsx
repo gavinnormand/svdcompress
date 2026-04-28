@@ -1,14 +1,14 @@
 import { FilePlus, FileUp } from "lucide-react";
 import { useRef, useState } from "react";
-import type { ColorSVD, State } from "../types";
+import type { SVDSession, State } from "../types";
 
 function FileUpload({
   setState,
-  setSVD,
+  setSession,
   setOriginalFile,
 }: {
   setState: (state: State) => void;
-  setSVD: (svd: ColorSVD | null) => void;
+  setSession: (session: SVDSession | null) => void;
   setOriginalFile: (originalFile: File) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -29,9 +29,9 @@ function FileUpload({
 
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
 
-      const data: ColorSVD = await res.json();
+      const data = await res.json();
       setOriginalFile(file);
-      setSVD(data);
+      setSession({ sessionId: data.session_id, rank: data.rank, width: data.width, height: data.height });
       setState("COMPRESS");
     } catch (e) {
       console.error(e);

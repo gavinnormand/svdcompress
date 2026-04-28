@@ -1,17 +1,17 @@
 import { useState } from "react";
 import FileUpload from "../components/fileUpload";
-import type { ColorSVD, State } from "../types";
+import type { SVDSession, State } from "../types";
 import Compress from "../components/compress";
 import Processing from "../components/processing";
 
 function Home() {
   const [state, setState] = useState<State>("BEGIN");
   const [originalFile, setOriginalFile] = useState<File>();
-  const [svd, setSVD] = useState<ColorSVD | null>(null);
+  const [session, setSession] = useState<SVDSession | null>(null);
 
   const handleReset = () => {
     setState("BEGIN");
-    setSVD(null);
+    setSession(null);
   };
 
   return (
@@ -23,15 +23,15 @@ function Home() {
       {state == "BEGIN" && (
         <FileUpload
           setState={setState}
-          setSVD={setSVD}
+          setSession={setSession}
           setOriginalFile={setOriginalFile}
         />
       )}
       {state == "PROCESSING" && <Processing />}
       {state === "COMPRESS" &&
-        (svd && originalFile ? (
+        (session && originalFile ? (
           <Compress
-            svd={svd}
+            session={session}
             handleReset={handleReset}
             originalFile={originalFile}
           />
