@@ -31,7 +31,7 @@ function FileUpload({
 
       const data = await res.json();
       setOriginalFile(file);
-      setSession({ sessionId: data.session_id, rank: data.rank, width: data.width, height: data.height });
+      setSession({ sessionId: data.session_id, rank: data.rank, width: data.width, height: data.height, frames: data.frames });
       setState("COMPRESS");
     } catch (e) {
       console.error(e);

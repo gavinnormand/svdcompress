@@ -3,8 +3,6 @@ import type { SVDSession, TabType } from "../types";
 import Tab from "./tab";
 import ResetTab from "./resetTab";
 
-const API_BASE = "http://localhost:8000";
-
 function Compress({
   session,
   handleReset,
@@ -14,10 +12,11 @@ function Compress({
   handleReset: () => void;
   originalFile: File;
 }) {
+  const { frames } = session;
   const [tab, setTab] = useState<TabType>("COMPRESSED");
-  const [numSingularValues, setNumSingularValues] = useState<number>(session.rank);
+  const [frameIndex, setFrameIndex] = useState<number>(frames.length - 1);
 
-  const imgSrc = `${API_BASE}/reconstruct?session_id=${session.sessionId}&k=${numSingularValues}`;
+  const currentFrame = frames[frameIndex];
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -44,16 +43,16 @@ function Compress({
           {tab === "COMPRESSED" && (
             <div className="flex w-full flex-col items-center gap-4">
               <p className="text-2xl font-medium text-white">
-                compressed, # of singular values = {numSingularValues}
+                compressed, # of singular values = {currentFrame.k}
               </p>
-              <img src={imgSrc} />
+              <img src={currentFrame.data} />
               <input
                 type="range"
-                min={1}
-                max={session.rank}
-                value={numSingularValues}
+                min={0}
+                max={frames.length - 1}
+                value={frameIndex}
                 step={1}
-                onChange={(e) => setNumSingularValues(Number(e.target.value))}
+                onChange={(e) => setFrameIndex(Number(e.target.value))}
                 className="w-1/3"
               />
             </div>
