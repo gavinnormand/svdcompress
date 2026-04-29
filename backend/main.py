@@ -36,7 +36,7 @@ async def svd(image: UploadFile = File(...)):
 
     rank = int(len(red_S))
 
-    num_frames = min(rank, 100)
+    num_frames = min(rank, 50)
     k_targets = set(int(k) for k in np.round(np.geomspace(1, rank, num_frames)).astype(int))
 
     cumR = np.zeros((height, width))
@@ -54,7 +54,7 @@ async def svd(image: UploadFile = File(...)):
                 np.clip(cumB, 0, 255).astype(np.uint8),
             ], axis=2)
             buf = io.BytesIO()
-            Image.fromarray(arr).save(buf, format="JPEG", quality=85)
+            Image.fromarray(arr).save(buf, format="JPEG", quality=100)
             frames.append({
                 "k": i + 1,
                 "data": "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode(),
