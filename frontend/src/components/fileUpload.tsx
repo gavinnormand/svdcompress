@@ -18,7 +18,9 @@ function FileUpload({
     const pixels = bitmap.width * bitmap.height;
     bitmap.close();
     if (pixels > 4_000_000) {
-      alert(`Image is too large (${bitmap.width}×${bitmap.height} = ${(pixels / 1_000_000).toFixed(1)}M pixels). Please use an image under 4 megapixels (e.g. 2000×2000).`);
+      alert(
+        `Image is too large (${bitmap.width}x${bitmap.height} = ${(pixels / 1_000_000).toFixed(1)}M pixels). Please use an image under 4 megapixels (e.g. 2000x2000).`,
+      );
       return;
     }
     setState("PROCESSING");
@@ -26,7 +28,7 @@ function FileUpload({
       const formData = new FormData();
       formData.append("image", file);
 
-      const res = await fetch("http://localhost:8000/svd", {
+      const res = await fetch(import.meta.env.VITE_API_URL, {
         method: "POST",
         body: formData,
       });

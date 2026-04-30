@@ -33,7 +33,7 @@ function Compress({
         className="w-2/3"
       />
       <p className="text-sm text-white/70">
-        SVD: {height}×{currentFrame.k} + {currentFrame.k} + {currentFrame.k}x
+        SVD: {height}x{currentFrame.k} + {currentFrame.k} + {currentFrame.k}x
         {width} = {svdValues.toLocaleString()} values/channel · pixels: {width}x
         {height} = {rawPixels.toLocaleString()} ·{" "}
         {(rawPixels / svdValues).toFixed(1)}x ratio
