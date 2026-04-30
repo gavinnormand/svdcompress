@@ -13,8 +13,15 @@ function FileUpload({
   const [dragging, setDragging] = useState(false);
 
   const uploadFiles = async (files: FileList) => {
-    setState("PROCESSING");
     const file = files[0];
+    const bitmap = await createImageBitmap(file);
+    const pixels = bitmap.width * bitmap.height;
+    bitmap.close();
+    if (pixels > 4_000_000) {
+      alert(`Image is too large (${bitmap.width}×${bitmap.height} = ${(pixels / 1_000_000).toFixed(1)}M pixels). Please use an image under 4 megapixels (e.g. 2000×2000).`);
+      return;
+    }
+    setState("PROCESSING");
     try {
       const formData = new FormData();
       formData.append("image", file);
