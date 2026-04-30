@@ -14,14 +14,18 @@ function FileUpload({
 
   const uploadFiles = async (files: FileList) => {
     const file = files[0];
-    const bitmap = await createImageBitmap(file);
-    const pixels = bitmap.width * bitmap.height;
-    bitmap.close();
-    if (pixels > 4_000_000) {
-      alert(
-        `Image is too large (${bitmap.width}x${bitmap.height} = ${(pixels / 1_000_000).toFixed(1)}M pixels). Please use an image under 4 megapixels (e.g. 2000x2000).`,
-      );
-      return;
+    try {
+      const bitmap = await createImageBitmap(file);
+      const pixels = bitmap.width * bitmap.height;
+      bitmap.close();
+      if (pixels > 4_000_000) {
+        alert(
+          `Image is too large (${bitmap.width}x${bitmap.height} = ${(pixels / 1_000_000).toFixed(1)}M pixels). Please use an image under 4 megapixels (e.g. 2000x2000).`,
+        );
+        return;
+      }
+    } catch {
+      console.log("Unsupported file type for size check. Skipping...")
     }
     setState("PROCESSING");
     try {

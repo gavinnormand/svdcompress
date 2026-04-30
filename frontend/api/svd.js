@@ -11,7 +11,6 @@ export default async function handler(req, res) {
     method: "POST",
     headers: {
       "content-type": req.headers["content-type"],
-      "content-length": String(body.length),
     },
     body,
   });
