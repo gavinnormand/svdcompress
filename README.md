@@ -2,7 +2,7 @@
 
 An interactive image compression tool powered by Singular Value Decomposition. Upload an image, watch it reconstruct from mathematical components, and drag a slider to explore the quality-versus-size trade-off in real time.
 
-Live at [compress.gavinnormand.com](https://compress.gavinnormand.com)
+Live at [svdcompress.vercel.app](https://svdcompress.vercel.app)
 
 ## How it works
 
