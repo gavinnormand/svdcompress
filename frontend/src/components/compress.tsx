@@ -1,26 +1,18 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { SVDSession, TabType } from "../types";
 import Tab from "./tab";
 import ResetTab from "./resetTab";
 import LogSlider from "./logSlider";
 import ImageCompare from "./imageCompare";
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
 function Compress({
   session,
   handleReset,
-  originalFile,
 }: {
   session: SVDSession;
   handleReset: () => void;
-  originalFile: File;
 }) {
-  const { frames, rank } = session;
+  const { frames, rank, width, height, previewUrl } = session;
   const [tab, setTab] = useState<TabType>("COMPRESSED");
   const [k, setK] = useState(frames[frames.length - 1].k);
 
@@ -28,15 +20,26 @@ function Compress({
     Math.abs(f.k - k) < Math.abs(best.k - k) ? f : best,
   );
 
-  const originalUrl = useMemo(
-    () => URL.createObjectURL(originalFile),
-    [originalFile],
-  );
+  const rawPixels = width * height;
+  const svdValues = currentFrame.k * (height + 1 + width);
 
-  const compressedBytes = Math.round(
-    ((currentFrame.data.length - "data:image/jpeg;base64,".length) * 3) / 4,
+  const controls = (
+    <>
+      <LogSlider
+        min={1}
+        max={rank}
+        value={k}
+        onChange={setK}
+        className="w-2/3"
+      />
+      <p className="text-sm text-white/70">
+        SVD: {height}×{currentFrame.k} + {currentFrame.k} + {currentFrame.k}x
+        {width} = {svdValues.toLocaleString()} values/channel · pixels: {width}x
+        {height} = {rawPixels.toLocaleString()} ·{" "}
+        {(rawPixels / svdValues).toFixed(1)}x ratio
+      </p>
+    </>
   );
-  const ratio = (originalFile.size / compressedBytes).toFixed(1);
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -62,42 +65,30 @@ function Compress({
         <div className="w-200 rounded-lg rounded-tl-none border-3 border-solid border-[#304674] bg-[#304674] p-6 text-center">
           {tab === "COMPRESSED" && (
             <div className="flex w-full flex-col items-center gap-4">
-              <p className="text-2xl font-medium text-white">Compressed</p>
+              <p className="text-2xl font-medium text-white">
+                Compressed, k = {currentFrame.k}
+              </p>
               <img src={currentFrame.data} />
+              {controls}
             </div>
           )}
           {tab === "ORIGINAL" && (
             <div className="flex flex-col items-center justify-center gap-4">
               <p className="text-2xl font-medium text-white">Original Image</p>
-              <img src={originalUrl} />
+              <img src={previewUrl} />
             </div>
           )}
           {tab === "COMPARE" && (
             <div className="flex w-full flex-col items-center gap-4">
-              <p className="text-2xl font-medium text-white">Compare</p>
+              <p className="text-2xl font-medium text-white">
+                Original vs k = {currentFrame.k}
+              </p>
               <ImageCompare
-                before={originalUrl}
+                before={previewUrl}
                 after={currentFrame.data}
                 k={currentFrame.k}
               />
-            </div>
-          )}
-          {(tab === "COMPRESSED" || tab === "COMPARE") && (
-            <div className="flex flex-col items-center gap-4 pt-4">
-              <LogSlider
-                min={1}
-                max={rank}
-                value={k}
-                onChange={setK}
-                className="w-2/3"
-              />
-              <div className="flex flex-col gap-2 text-sm text-white/70">
-                <p>Number of singular values = {currentFrame.k}</p>
-                <p>
-                  ~{formatBytes(compressedBytes)} compressed ·{" "}
-                  {formatBytes(originalFile.size)} original · {ratio}x smaller
-                </p>
-              </div>
+              {controls}
             </div>
           )}
         </div>

@@ -3,10 +3,10 @@ import FileUpload from "../components/fileUpload";
 import type { SVDSession, State } from "../types";
 import Compress from "../components/compress";
 import Processing from "../components/processing";
+import HowItWorks from "../components/howItWorks";
 
 function Home() {
   const [state, setState] = useState<State>("BEGIN");
-  const [originalFile, setOriginalFile] = useState<File>();
   const [session, setSession] = useState<SVDSession | null>(null);
 
   const handleReset = () => {
@@ -21,21 +21,15 @@ function Home() {
         <span className="font-bold">Singular Value Decomposition</span>!
       </p>
       {state == "BEGIN" && (
-        <FileUpload
-          setState={setState}
-          setSession={setSession}
-          setOriginalFile={setOriginalFile}
-        />
+        <>
+          <FileUpload setState={setState} setSession={setSession} />
+          <HowItWorks />
+        </>
       )}
       {state == "PROCESSING" && <Processing />}
-      {state === "COMPRESS" &&
-        (session && originalFile ? (
-          <Compress
-            session={session}
-            handleReset={handleReset}
-            originalFile={originalFile}
-          />
-        ) : null)}
+      {state === "COMPRESS" && (
+        <Compress session={session!} handleReset={handleReset} />
+      )}
     </div>
   );
 }

@@ -5,15 +5,12 @@ import type { SVDSession, State } from "../types";
 function FileUpload({
   setState,
   setSession,
-  setOriginalFile,
 }: {
   setState: (state: State) => void;
   setSession: (session: SVDSession | null) => void;
-  setOriginalFile: (originalFile: File) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const [dragging, setDragging] = useState<boolean>(false);
+  const [dragging, setDragging] = useState(false);
 
   const uploadFiles = async (files: FileList) => {
     setState("PROCESSING");
@@ -30,8 +27,13 @@ function FileUpload({
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
 
       const data = await res.json();
-      setOriginalFile(file);
-      setSession({ sessionId: data.session_id, rank: data.rank, width: data.width, height: data.height, frames: data.frames });
+      setSession({
+        rank: data.rank,
+        width: data.width,
+        height: data.height,
+        previewUrl: data.preview,
+        frames: data.frames,
+      });
       setState("COMPRESS");
     } catch (e) {
       console.error(e);
@@ -52,16 +54,13 @@ function FileUpload({
     uploadFiles(e.dataTransfer.files);
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
   return (
     <div
       onDrop={handleDrop}
-      onDragOver={handleDragOver}
+      onDragOver={(e) => e.preventDefault()}
       onDragEnter={() => setDragging(true)}
       onDragLeave={() => setDragging(false)}
-      className={`flex aspect-2/1 w-full max-w-200 flex-col items-center justify-center gap-1 rounded-lg border-3 border-[#304674] p-4 text-center ${dragging ? `border-solid bg-[#304674]` : `border-dashed bg-[#c6d3e3]`}`}
+      className={`flex aspect-2/1 w-full max-w-200 flex-col items-center justify-center gap-1 rounded-lg border-3 border-[#304674] p-4 text-center ${dragging ? "border-solid bg-[#304674]" : "border-dashed bg-[#c6d3e3]"}`}
     >
       <input
         ref={inputRef}

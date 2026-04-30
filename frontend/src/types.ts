@@ -8,9 +8,9 @@ export type SVDFrame = {
 };
 
 export type SVDSession = {
-  sessionId: string;
   rank: number;
   width: number;
   height: number;
+  previewUrl: string;
   frames: SVDFrame[];
 };
