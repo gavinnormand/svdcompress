@@ -12,9 +12,9 @@ The backend computes the decomposition and pre-renders 50 log-spaced frames (k =
 
 ## Stack
 
-- **Frontend** — React, TypeScript, Vite, Tailwind CSS
-- **Backend** — FastAPI, NumPy, Pillow, hosted on AWS
-- **API proxy** — Vercel serverless function
+- **Frontend** - React, TypeScript, Vite, Tailwind CSS
+- **Backend** - FastAPI, NumPy, Pillow, hosted on AWS
+- **API proxy** - Vercel serverless function
 
 ## Limitations
 
