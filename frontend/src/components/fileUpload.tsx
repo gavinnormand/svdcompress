@@ -28,7 +28,7 @@ function FileUpload({
       const formData = new FormData();
       formData.append("image", file);
 
-      const res = await fetch(import.meta.env.VITE_API_URL, {
+      const res = await fetch("/api/svd", {
         method: "POST",
         body: formData,
       });

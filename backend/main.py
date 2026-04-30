@@ -9,7 +9,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://svdcompress.vercel.app"],
+    allow_origins=["http://localhost:5173", "http://localhost:3000", "https://svdcompress.vercel.app", "https://compress.gavinnormand.com"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
